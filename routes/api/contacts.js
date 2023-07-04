@@ -9,7 +9,7 @@ router.get("/", async (req, res, next) => {
     const result = await contacts.listContacts(); // получаем весь список контактов
     res.json(result);
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 });
 
@@ -21,18 +21,12 @@ router.get("/:contactId", async (req, res, next) => {
     const result = await contacts.getContactById(contactId);
 
     if (!result) {
-      throw HttpError(404, "Not found"); // функция генерит ошибку
-      // const error = new Error("Not found");
-      // error.status = 404;
-      // throw error; // выбрасывает ошибку
+      throw HttpError(404, "Not found"); // функция генерит ошибку, если таковая есть, она улетает в catch
     }
-    // if (!result) return res.status(404).json({ message: "Not found" }); // если такого id не, отправить ответ
 
     res.json(result);
   } catch (error) {
-    const { status = 500, message = "Server error" } = error;
-
-    res.status(status).json({ message });
+    next(error); // если передаем next error, тогда express ищет функцию обработкии ошибок с 4-мя параметрами
   }
 }); // все динамические части маршрута сохраняются в объекте req.params
 
