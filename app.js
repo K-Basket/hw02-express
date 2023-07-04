@@ -10,7 +10,7 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
 app.use(cors());
-// app.use(express.json())
+app.use(express.json()); // проверяет тело запроса, если есть - проверяет тип запроса по заголовку Content-Type, если aplication/json - тогда парсит его в объект
 
 app.use("/api/contacts", contactsRouter);
 
