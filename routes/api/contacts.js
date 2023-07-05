@@ -3,24 +3,25 @@ const contacts = require("../../models/contacts");
 const { HttpError } = require("../../helpers");
 const Joi = require("joi"); // для валидации данных
 
-const router = express.Router();
+const router = express.Router(); // Создает объект мини-приложения, который передаем в app.js
 
-// составляем схему требований к каждому полю объекта, приходящего от frontend
 const addSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
   phone: Joi.string().required(),
-});
+}); // схема требований к каждому полю объекта, приходящего от frontend
 
+// получить весь список контактов
 router.get("/", async (req, res, next) => {
   try {
-    const result = await contacts.listContacts(); // получаем весь список контактов
+    const result = await contacts.listContacts();
     res.json(result);
   } catch (error) {
     next(error);
   }
 });
 
+// получить контакт по id
 router.get("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params; // забираем из объекта params значение contactId // все динамические части маршрута сохраняются в объекте req.params
@@ -36,6 +37,7 @@ router.get("/:contactId", async (req, res, next) => {
   }
 });
 
+// добавить контакт
 router.post("/", async (req, res, next) => {
   try {
     const { error } = addSchema.validate(req.body); // проверяет объект запроса
@@ -49,6 +51,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+// удалить контакт
 router.delete("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params;
@@ -64,6 +67,7 @@ router.delete("/:contactId", async (req, res, next) => {
   }
 });
 
+// заменить контакт по id
 router.put("/:contactId", async (req, res, next) => {
   try {
     const { error } = addSchema.validate(req.body);
