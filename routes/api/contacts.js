@@ -1,7 +1,7 @@
 import express from "express";
 import {
   addContact,
-  getContactById,
+  getById,
   listContacts,
   removeContact,
   updateContact,
@@ -17,7 +17,6 @@ const addSchema = Joi.object({
   phone: Joi.string().required(),
 }); // схема требований к каждому полю объекта, приходящего от frontend
 
-// получить весь список контактов
 router.get("/", async (req, res, next) => {
   try {
     const result = await listContacts();
@@ -27,15 +26,12 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// получить контакт по id
 router.get("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params; // забираем из объекта params значение contactId // все динамические части маршрута сохраняются в объекте req.params
-    const result = await getContactById(contactId);
+    const result = await getById(contactId);
 
-    if (!result) {
-      throw HttpError(404, "Not found"); // функция генерит ошибку, если таковая есть, она улетает в catch
-    }
+    if (!result) throw HttpError(404, "Not found"); // функция генерит ошибку, если таковая есть, она улетает в catch
 
     res.json(result);
   } catch (error) {
@@ -43,13 +39,12 @@ router.get("/:contactId", async (req, res, next) => {
   }
 });
 
-// добавить контакт
 router.post("/", async (req, res, next) => {
   try {
     const { error } = addSchema.validate(req.body); // проверяет объект запроса
-    if (error) {
-      throw HttpError(400, error.message);
-    }
+
+    if (error) throw HttpError(400, "missing required name field");
+
     const result = await addContact(req.body); // передаваемый объект от frontend находится в req.body
     res.status(201).json(result);
   } catch (error) {
@@ -57,38 +52,29 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-// удалить контакт
 router.delete("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params;
     const result = await removeContact(contactId);
 
-    if (!result) {
-      throw HttpError(404, "Not found");
-    }
+    if (!result) throw HttpError(404, "Not found");
 
-    res.json({ message: "Delete success", ...result });
+    res.json({ message: "contact deleted" });
   } catch (error) {
     next(error);
   }
 });
 
-// заменить контакт по id
 router.put("/:contactId", async (req, res, next) => {
   try {
     const { error } = addSchema.validate(req.body);
 
-    if (error) {
-      throw HttpError(400, error.message);
-    }
+    if (error) throw HttpError(400, "missing fields");
 
     const { contactId } = req.params;
-    console.log(req.body);
     const result = await updateContact(contactId, req.body);
 
-    if (!result) {
-      throw HttpError(404, "Not found");
-    }
+    if (!result) throw HttpError(404, "Not found");
 
     res.json(result);
   } catch (error) {
