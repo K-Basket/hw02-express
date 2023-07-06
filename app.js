@@ -1,8 +1,8 @@
-const express = require("express");
-const logger = require("morgan");
-const cors = require("cors");
-
-const contactsRouter = require("./routes/api/contacts"); // импортируем роуты работы с маршрутами
+import express from "express";
+import morgan from "morgan";
+const logger = morgan;
+import cors from "cors";
+import { router as contactsRouter } from "./routes/api/contacts.js"; // импортируем роуты работы с маршрутами
 
 const app = express(); // app - создан web-сервер
 
@@ -22,4 +22,4 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 }); // функция обработки ошибок
 
-module.exports = app; // экспортируем web-server для запуска в файле server.js
+export default app; // экспортируем web-server для запуска в файле server.js

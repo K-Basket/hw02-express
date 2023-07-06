@@ -1,9 +1,15 @@
-const express = require("express");
-const contacts = require("../../models/contacts");
-const { HttpError } = require("../../helpers");
-const Joi = require("joi"); // для валидации данных
+import express from "express";
+import {
+  addContact,
+  getContactById,
+  listContacts,
+  removeContact,
+  updateContact,
+} from "../../models/contacts.js";
+import { HttpError } from "../../helpers/index.js";
+import Joi from "joi"; // для валидации данных
 
-const router = express.Router(); // Создает объект мини-приложения, который передаем в app.js
+export const router = express.Router(); // Создает объект мини-приложения, который передаем в app.js
 
 const addSchema = Joi.object({
   name: Joi.string().required(),
@@ -14,7 +20,7 @@ const addSchema = Joi.object({
 // получить весь список контактов
 router.get("/", async (req, res, next) => {
   try {
-    const result = await contacts.listContacts();
+    const result = await listContacts();
     res.json(result);
   } catch (error) {
     next(error);
@@ -25,7 +31,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params; // забираем из объекта params значение contactId // все динамические части маршрута сохраняются в объекте req.params
-    const result = await contacts.getContactById(contactId);
+    const result = await getContactById(contactId);
 
     if (!result) {
       throw HttpError(404, "Not found"); // функция генерит ошибку, если таковая есть, она улетает в catch
@@ -44,7 +50,7 @@ router.post("/", async (req, res, next) => {
     if (error) {
       throw HttpError(400, error.message);
     }
-    const result = await contacts.addContact(req.body); // передаваемый объект от frontend находится в req.body
+    const result = await addContact(req.body); // передаваемый объект от frontend находится в req.body
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -55,7 +61,7 @@ router.post("/", async (req, res, next) => {
 router.delete("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await contacts.removeContact(contactId);
+    const result = await removeContact(contactId);
 
     if (!result) {
       throw HttpError(404, "Not found");
@@ -78,7 +84,7 @@ router.put("/:contactId", async (req, res, next) => {
 
     const { contactId } = req.params;
     console.log(req.body);
-    const result = await contacts.updateContact(contactId, req.body);
+    const result = await updateContact(contactId, req.body);
 
     if (!result) {
       throw HttpError(404, "Not found");
@@ -89,5 +95,3 @@ router.put("/:contactId", async (req, res, next) => {
     next(error);
   }
 });
-
-module.exports = router;
