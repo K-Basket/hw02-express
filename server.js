@@ -1,7 +1,7 @@
 import app from './app.js';
 import mongoose from 'mongoose';
 
-const { DB_HOST } = process.env; // глобальный объект - Environment (Переменная окружения)
+const { DB_HOST, PORT = 3000 } = process.env; // берем данные из глобального объекта - Environment (Переменная окружения)
 
 mongoose.set('strictQuery', true);
 
@@ -9,7 +9,7 @@ mongoose.set('strictQuery', true);
 mongoose
   .connect(DB_HOST)
   .then(() => {
-    app.listen(3000, infoServer);
+    app.listen(PORT, infoServer);
   })
   .catch(error => {
     console.log(error.message);

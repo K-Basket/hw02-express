@@ -5,7 +5,7 @@ import cors from 'cors';
 import { router as contactsRouter } from './routes/api/contacts.js'; // импортируем роуты работы с маршрутами
 import { configDotenv } from 'dotenv'; // для записи в .env секретных данных
 
-configDotenv(); // берет данные из файла .env и добавляет их в process.env, из которого server.js берет секретные данные
+configDotenv(); // передача данных из файла / .env / в глобальную Переменную окружения, из которого server.js берет секретные данные
 
 const app = express(); // app - создан web-сервер
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
