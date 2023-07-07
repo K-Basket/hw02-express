@@ -1,6 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
-const logger = morgan;
+const logger = morgan; // выводит в консоль инфомрацию про запросы CRUD
 import cors from 'cors';
 import { router as contactsRouter } from './routes/api/contacts.js'; // импортируем роуты работы с маршрутами
 import { configDotenv } from 'dotenv'; // для записи в .env секретных данных
