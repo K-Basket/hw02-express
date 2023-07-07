@@ -1,7 +1,21 @@
-import app from "./app.js";
+import app from './app.js';
+import mongoose from 'mongoose';
 
-app.listen(3000, () => {
-  console.log("Server running. Use our API on port: 3000");
-});
+const { DB_HOST } = process.env; // глобальный объект - Environment (Переменная окружения)
 
-// Здесь будет подклюение к базе данных
+mongoose.set('strictQuery', true);
+
+// подключение к базе данных MongoDB
+mongoose
+  .connect(DB_HOST)
+  .then(() => {
+    app.listen(3000, infoServer);
+  })
+  .catch(error => {
+    console.log(error.message);
+    process.exit(1); // закрывает запущенные процессы, (1) - означает что закрыто с неизвестной ошибкой
+  });
+
+function infoServer() {
+  console.log('Server running. Port: 3000');
+}
