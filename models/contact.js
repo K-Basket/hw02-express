@@ -33,8 +33,12 @@ export const addSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
   phone: Joi.string().required(),
-  favorite: Joi.boolean().required(),
+  favorite: Joi.boolean(),
 }); // схема требований к каждому полю объекта, приходящего от frontend
+
+export const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
 
 // Создаем класс, который будет работать с коллекцией 'contacts'
 // С помощью схемы создаем модель (название - существительное в одненi).
