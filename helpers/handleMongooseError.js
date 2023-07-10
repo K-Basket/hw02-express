@@ -3,7 +3,5 @@ export const handleMongooseError = (error, data, next) => {
   next();
 };
 
-// export default handleMongooseError;
-
 // когда при сохранении в модели образовалась ошибка, тогда пусть сработает middleware (collback)
 // т.к. monngoose возвращает 500 ошибку, эта функция позволяет дать правильный статус ошибке.

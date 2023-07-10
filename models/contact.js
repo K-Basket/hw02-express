@@ -4,7 +4,7 @@ import { Schema, model } from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
 import Joi from 'joi';
 
-// Требования к модели, валидация для mongoose, валидация для сохраняется в БД.
+// Требования к модели, валидация для mongoose, валидация выполняется перед сохранением в MongoDB.
 const contactSchema = new Schema(
   {
     name: {
@@ -34,7 +34,7 @@ export const addSchema = Joi.object({
   email: Joi.string().required(),
   phone: Joi.string().required(),
   favorite: Joi.boolean(),
-}); // схема требований к каждому полю объекта, приходящего от frontend
+}); // валидация данных приходящих от frontend
 
 export const updateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),
