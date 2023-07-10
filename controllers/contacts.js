@@ -19,7 +19,7 @@ export async function getById(req, res, next) {
     isValidId(contactId, next);
 
     // const result = await Contact.findOne({ _id: contactId }); // метод 1
-    const result = await Contact.findById(contactId); // метод 2
+    const result = await Contact.findById(contactId, '-createdAt -updatedAt'); // метод 2
     if (!result) throw HttpError(404, 'Not found'); // функция генерит ошибку, если таковая есть, она улетает в catch
     res.json(result);
   } catch (error) {
