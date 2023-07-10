@@ -4,6 +4,9 @@ import { Schema, model } from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
 import Joi from 'joi';
 
+const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const phoneRegexp = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+
 // Требования к модели, валидация для mongoose, валидация выполняется перед сохранением в MongoDB.
 const contactSchema = new Schema(
   {
@@ -13,6 +16,7 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
+      match: emailRegexp,
       required: true,
     },
     phone: {
@@ -31,8 +35,8 @@ contactSchema.post('save', handleMongooseError);
 
 export const addSchema = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
+  email: Joi.string().pattern(emailRegexp).required(),
+  phone: Joi.string().pattern(phoneRegexp).required(),
   favorite: Joi.boolean(),
 }); // валидация данных приходящих от frontend
 
