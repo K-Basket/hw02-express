@@ -17,5 +17,5 @@ mongoose
   });
 
 function infoServer() {
-  console.log('Server running. Port: 3000');
+  console.log('Database connection successful');
 }
