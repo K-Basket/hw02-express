@@ -3,6 +3,7 @@ import morgan from 'morgan';
 const logger = morgan; // выводит в консоль инфомрацию про запросы CRUD
 import cors from 'cors';
 import { router as contactsRouter } from './routes/api/contacts.js'; // импортируем роуты работы с маршрутами
+import { router as authRouter } from './routes/api/auth.js';
 import { configDotenv } from 'dotenv'; // для записи в .env секретных данных
 
 configDotenv(); // передача данных из файла / .env / в глобальную Переменную окружения, из которого server.js берет секретные данные
@@ -14,6 +15,7 @@ app.use(logger(formatsLogger));
 app.use(cors()); // передаем middleware функцию cors, после чего блокировка сервером не производится.
 app.use(express.json()); // парсер JSON, интерпретирует значение req.body в формат json
 app.use('/api/contacts', contactsRouter); // когда прийдет запрос, который начинается с "/api/contacts" ищи его обработчик в contactsRouter
+app.use('/api/auth', authRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
