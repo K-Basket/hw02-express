@@ -4,9 +4,10 @@ const logger = morgan; // выводит в консоль инфомрацию 
 import cors from 'cors';
 import { router as contactsRouter } from './routes/api/contacts.js'; // импортируем роуты работы с маршрутами
 import { router as authRouter } from './routes/api/auth.js';
-import { configDotenv } from 'dotenv'; // для записи в .env секретных данных
+import 'dotenv/config'; // передача данных из файла / .env / в глобальную Переменную окружения
 
-configDotenv(); // передача данных из файла / .env / в глобальную Переменную окружения, из которого server.js берет секретные данные
+// import { configDotenv } from 'dotenv'; // для записи в .env секретных данных
+// configDotenv(); // передача данных из файла / .env / в глобальную Переменную окружения
 
 const app = express(); // app - создан web-сервер
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';

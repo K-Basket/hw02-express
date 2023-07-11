@@ -1,8 +1,13 @@
 // 💙💛 Здесь контроллеры для авторизации и регистрации
 
+import { configDotenv } from 'dotenv';
 import { HttpError } from '../helpers/HttpError.js';
 import { User, loginSchema, registerSchema } from '../models/user.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'; // для хеширования пароля userа
+import jwt from 'jsonwebtoken'; // для создания JWT токена
+import 'dotenv/config'; // передача данных из файла / .env / в глобальную Переменную окружения
+
+const { SECRET_KEY } = process.env;
 
 export const register = async (req, res, next) => {
   try {
@@ -38,12 +43,19 @@ export const login = async (req, res, next) => {
     const user = await User.findOne({ email: email });
     if (!user) throw HttpError(401, 'Email or password invalid');
 
-    // если user есть в DB тогда проверяяем пароль с помощью dcrypt
+    // если user есть в DB, тогда проверяем пароль с помощью dcrypt
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) throw HttpError(401, 'Email or password invalid'); // если не совпадает - выбрасываем ошибку
 
     // если пароль совпадает - создаем токен
-    const token = '111111.2222222.333333';
+    const payload = {
+      id: user._id,
+    };
+    // создаем token - метод .sign()
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' }); // payload - info про User (id):\
+
+    // проверка валидности токена
+    const { id } = jwt.verify(token, SECRET_KEY);
 
     res.json({
       token,
