@@ -1,16 +1,12 @@
 import { HttpError } from '../helpers/HttpError.js';
 import { Contact, addSchema, updateFavoriteSchema } from '../models/contact.js';
 import { isValidId } from '../helpers/isValidId.js';
-import { User } from '../models/user.js';
-// import { authenticate } from '../middlewares/authenticate.js';
-import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-
-const { SECRET_KEY } = process.env;
 
 export async function listContacts(req, res, next) {
   try {
-    const result = await Contact.find({}, '-createdAt -updatedAt'); // ищет все контакты в MongoDB
+    const { _id: owner } = req.user; // вытаскиваем _id одновременно переименовав его в owner из req // добавляет ownera в req d authenticate.js
+    const result = await Contact.find({ owner }, '-createdAt -updatedAt'); // ищет все контакты в MongoDB c учетом собственника контакта и исключаем дату создания и обновления
 
     res.json(result);
   } catch (error) {
@@ -38,10 +34,10 @@ export async function getById(req, res, next) {
 export async function addContact(req, res, next) {
   try {
     const { error } = addSchema.validate(req.body); // валидация объекта запроса приходящего от backend (model/contact.js)
-
     if (error) throw HttpError(400, 'missing required name field');
 
-    const result = await Contact.create(req.body); // добавляет контакт в MongoDB
+    const { _id: owner } = req.user; // вытаскиваем _id одновременно переименовав его в owner из req
+    const result = await Contact.create({ ...req.body, owner }); // добавляет контакт в MongoDB с учетом собственника контакта
 
     res.status(201).json(result);
   } catch (error) {
@@ -52,7 +48,6 @@ export async function addContact(req, res, next) {
 export async function updateContact(req, res, next) {
   try {
     const { error } = addSchema.validate(req.body);
-
     if (error) throw HttpError(400, 'missing required name field');
 
     const { contactId } = req.params;
@@ -74,7 +69,6 @@ export async function updateContact(req, res, next) {
 export async function updateStatusContact(req, res, next) {
   try {
     const { error } = updateFavoriteSchema.validate(req.body);
-
     if (error) throw HttpError(400, 'missing required field Favorite');
 
     const { contactId } = req.params;

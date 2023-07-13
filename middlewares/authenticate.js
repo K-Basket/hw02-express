@@ -19,6 +19,8 @@ export const authenticate = async (req, res, next) => {
 
     if (!user) next(HttpError(401));
 
+    req.user = user; // записываем ранее найденого пользователя по id в свойство request, теперь эти данные о пользователе будут доступны везде.
+
     next(); // если все оk, тогда пропукаем код далее, т.е. выходим из middleware
   } catch {
     next(HttpError(401));

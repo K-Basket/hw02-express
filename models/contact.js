@@ -28,6 +28,11 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false, // устанавливает по умолчанию false
     },
+    owner: {
+      type: Schema.Types.ObjectId, // здесь будет сохраняться id, котторый генерит MongoDB
+      ref: 'user', // название коллекции с которой будет это id
+      required: true,
+    }, // данные залогиненого пользователя
   },
   { versionKey: false, timestamps: true } // запретить создавать версию, разрешить создавать дату создания/обновления
 ); // создаем схему (указать название поля и требование к полю)
