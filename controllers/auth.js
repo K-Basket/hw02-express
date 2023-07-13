@@ -1,6 +1,5 @@
 // 💙💛 Здесь контроллеры для авторизации и регистрации
 
-import { configDotenv } from 'dotenv';
 import { HttpError } from '../helpers/HttpError.js';
 import { User, loginSchema, registerSchema } from '../models/user.js';
 import bcrypt from 'bcrypt'; // для хеширования пароля userа
@@ -50,12 +49,14 @@ export const login = async (req, res, next) => {
     // если пароль совпадает - создаем токен
     const payload = {
       id: user._id,
-    };
+    }; // создаем payload с id usera
     // создаем token - метод .sign()
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' }); // payload - info про User (id):\
 
-    // проверка валидности токена
-    const { id } = jwt.verify(token, SECRET_KEY);
+    // // проверка валидности токена
+    // const { id } = jwt.verify(token, SECRET_KEY);
+
+    // доступ к базе только залогиненый user
 
     res.json({
       token,

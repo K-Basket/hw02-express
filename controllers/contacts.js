@@ -1,6 +1,12 @@
 import { HttpError } from '../helpers/HttpError.js';
 import { Contact, addSchema, updateFavoriteSchema } from '../models/contact.js';
 import { isValidId } from '../helpers/isValidId.js';
+import { User } from '../models/user.js';
+// import { authenticate } from '../middlewares/authenticate.js';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
+
+const { SECRET_KEY } = process.env;
 
 export async function listContacts(req, res, next) {
   try {
