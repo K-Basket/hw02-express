@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getCurrent } from '../../controllers/auth.js';
+import { register, login, getCurrent, logout } from '../../controllers/auth.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 
 export const router = express.Router();
@@ -9,3 +9,5 @@ router.post('/register', register); // или /signup, регистрация п
 router.post('/login', login); // или /signin, авторизация пользователя
 
 router.get('/current', authenticate, getCurrent); // проверяем актуальность токена
+
+router.post('/logout', authenticate, logout); // разлогинивание пользователя

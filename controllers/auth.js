@@ -52,6 +52,8 @@ export const login = async (req, res, next) => {
     }; // создаем payload с id usera
     // создаем token - метод .sign()
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' }); // payload - info про User (id):\
+    // записываем токен в DB, после чего можно будет разлогиниваться
+    await User.findByIdAndUpdate(user._id, { token }); // запиисали токен в DB
 
     res.json({
       token,
@@ -61,8 +63,26 @@ export const login = async (req, res, next) => {
   }
 };
 
+// для проверки актуальности токена после перезагрузки страницы (не разлогиниваться)
 export const getCurrent = async (req, res, next) => {
-  const { email, name } = req.user;
+  try {
+    const { email, name } = req.user;
 
-  res.json({ email, name });
+    res.json({ email, name });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logout = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    await User.findByIdAndUpdate(_id, { token: '' });
+
+    res.json({
+      message: 'Logout success',
+    });
+  } catch (error) {
+    next(error);
+  }
 };
