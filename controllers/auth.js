@@ -53,15 +53,16 @@ export const login = async (req, res, next) => {
     // создаем token - метод .sign()
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' }); // payload - info про User (id):\
 
-    // // проверка валидности токена
-    // const { id } = jwt.verify(token, SECRET_KEY);
-
-    // доступ к базе только залогиненый user
-
     res.json({
       token,
     });
   } catch (error) {
     next(error);
   }
+};
+
+export const getCurrent = async (req, res, next) => {
+  const { email, name } = req.user;
+
+  res.json({ email, name });
 };
