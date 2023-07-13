@@ -11,7 +11,6 @@ const { SECRET_KEY } = process.env;
 export const register = async (req, res, next) => {
   try {
     const { error } = registerSchema.validate(req.body);
-
     if (error) throw HttpError(400, 'missing required name field');
 
     const { email, password } = req.body;

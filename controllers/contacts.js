@@ -1,12 +1,9 @@
 import { HttpError } from '../helpers/HttpError.js';
 import { Contact, addSchema, updateFavoriteSchema } from '../models/contact.js';
-import { isValidId } from '../helpers/isValidId.js';
-import 'dotenv/config';
 
 export async function listContacts(req, res, next) {
   try {
     const { _id: owner } = req.user; // вытаскиваем _id одновременно переименовав его в owner из req // добавляет ownera в req в authenticate.js
-    console.log('req.user :>> ', req.user);
     const { page = 1, limit = 10 } = req.query; // req.query - все параметры поиска
     const skip = (page - 1) * limit; // вычисление пагинации
     const result = await Contact.find({ owner }, '-createdAt -updatedAt', {
@@ -25,8 +22,6 @@ export async function listContacts(req, res, next) {
 export async function getById(req, res, next) {
   try {
     const { contactId } = req.params; // забираем из объекта params значение contactId // все динамические части маршрута сохраняются в объекте req.params
-
-    isValidId(contactId, next); // проверяет валидность id внутри Mongoose
 
     // const result = await Contact.findOne({ _id: contactId }); // метод 1
     const result = await Contact.findById(contactId, '-createdAt -updatedAt'); // метод 2 // ищет по id контакт MongoDB
@@ -60,8 +55,6 @@ export async function updateContact(req, res, next) {
 
     const { contactId } = req.params;
 
-    isValidId(contactId, next);
-
     const result = await Contact.findByIdAndUpdate(contactId, req.body, {
       new: true,
     }); // обновляет все поля контакта в MongoDB // метод возвращает старую версию контакта, чтобы возвращал новую добавить param-3: {new: true}, работает для PUT и PATCH
@@ -81,8 +74,6 @@ export async function updateStatusContact(req, res, next) {
 
     const { contactId } = req.params;
 
-    isValidId(contactId, next);
-
     const result = await Contact.findByIdAndUpdate(contactId, req.body, {
       new: true,
     }); // обновляет свойство favorite в MongoDB
@@ -99,7 +90,6 @@ export async function removeContact(req, res, next) {
   try {
     const { contactId } = req.params;
 
-    isValidId(contactId, next);
     // const result = await Contact.findByIdAndDelete(contactId); // Method-1
     const result = await Contact.findByIdAndRemove(contactId); // удаляет контакт по id из MongoDB // Method-2
 

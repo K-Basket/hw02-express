@@ -8,20 +8,23 @@ import {
   updateStatusContact,
 } from '../../controllers/contacts.js';
 import { authenticate } from '../../middlewares/authenticate.js';
+import { isValidId } from '../../middlewares/isValidId.js';
 
 export const router = express.Router(); // Создает объект мини-приложения, который передаем в app.js
 
-// router.use(authenticate);
+router.get('/', authenticate, listContacts);
 
-// если функциия authenticate выполнена, тогда переходим к следующей функции (listContacts) итд.
-router.get('/', authenticate, listContacts); // !!! второй, третий итд параметры - callback !!! // authenticate: middleware проверяетс валидность токена пришедшего от backend
-
-router.get('/:contactId', authenticate, getById);
+router.get('/:contactId', authenticate, isValidId, getById);
 
 router.post('/', authenticate, addContact);
 
-router.put('/:contactId', authenticate, updateContact);
+router.put('/:contactId', authenticate, isValidId, updateContact);
 
-router.patch('/:contactId/favorite', authenticate, updateStatusContact);
+router.patch(
+  '/:contactId/favorite',
+  authenticate,
+  isValidId,
+  updateStatusContact
+);
 
-router.delete('/:contactId', authenticate, removeContact);
+router.delete('/:contactId', authenticate, isValidId, removeContact);
