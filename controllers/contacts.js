@@ -16,6 +16,8 @@ export async function listContacts(req, res, next) {
       skip,
       limit,
     }).populate('owner', 'name email');
+    // /.find({ owner }, '-createdAt -updatedAt', {skip, limit,}/ - ищет все контакты в MongoDB c учетом собственника контакта; /'-createdAt -updatedAt'/ - и исключаем дату создания и обновления
+    // .populate('owner') - означает след-ее, возьми поле 'owner', найди с какой оно коллекции, пойди в ту коллекцию, найди объект с таким id и и вставь в поле owner; второй параметр - это список нужных полей; третий параметр - это пагинация
 
     res.json(result);
   } catch (error) {
