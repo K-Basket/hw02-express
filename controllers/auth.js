@@ -1,7 +1,12 @@
 // 💙💛 Здесь контроллеры для авторизации и регистрации
 
 import { HttpError } from '../helpers/HttpError.js';
-import { User, loginSchema, registerSchema } from '../models/user.js';
+import {
+  User,
+  loginSchema,
+  registerSchema,
+  subscriptionSchema,
+} from '../models/user.js';
 import bcrypt from 'bcrypt'; // для хеширования пароля userа
 import jwt from 'jsonwebtoken'; // для создания JWT токена
 import 'dotenv/config'; // передача данных из файла / .env / в глобальную Переменную окружения
@@ -81,6 +86,24 @@ export const logout = async (req, res, next) => {
     res.json({
       message: 'Logout success',
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const subscription = async (req, res, next) => {
+  try {
+    const { error } = subscriptionSchema.validate(req.body);
+    if (error) throw HttpError(400, 'missing required field "subscription"');
+
+    const { subscription } = req.body;
+    const { _id } = req.user;
+    const result = await User.findByIdAndUpdate(
+      _id,
+      { subscription },
+      { new: true }
+    );
+    res.json(result);
   } catch (error) {
     next(error);
   }
