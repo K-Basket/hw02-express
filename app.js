@@ -15,6 +15,8 @@ const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 app.use(logger(formatsLogger));
 app.use(cors()); // передаем middleware функцию cors, после чего блокировка сервером не производится.
 app.use(express.json()); // парсер JSON, интерпретирует значение req.body в формат json
+app.use(express.static('public')); // если прийдет запрос на файл, бери их в папке public
+
 app.use('/api/contacts', contactsRouter); // когда прийдет запрос, который начинается с "/api/contacts" ищи его обработчик в contactsRouter
 app.use('/api/auth', authRouter);
 

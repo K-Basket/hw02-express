@@ -10,8 +10,13 @@ import {
 import bcrypt from 'bcrypt'; // для хеширования пароля userа
 import jwt from 'jsonwebtoken'; // для создания JWT токена
 import 'dotenv/config'; // передача данных из файла / .env / в глобальную Переменную окружения
+import gravatar from 'gravatar'; // генерация временной аватарки
+import path from 'path';
+import fs from 'fs/promises';
+import Jimp from 'jimp'; // resize pictures
 
 const { SECRET_KEY } = process.env;
+const avatarsDir = path.resolve('public', 'avatars');
 
 export const register = async (req, res, next) => {
   try {
@@ -24,7 +29,13 @@ export const register = async (req, res, next) => {
     if (user) throw HttpError(409, 'Email already in use'); // возврат ошибки на дублирование e-mail
 
     const hashPassword = await bcrypt.hash(password, 10); // хеширование пароля, 10-кол-во случайных символов при хешировании
-    const newUser = await User.create({ ...req.body, password: hashPassword }); // сохраняем в DB hashPassword
+    const avatarURL = gravatar.url(email); // присваивание user временной аватарки
+
+    const newUser = await User.create({
+      ...req.body,
+      password: hashPassword,
+      avatarURL,
+    }); // сохраняем в DB hashPassword
 
     res.status(201).json({
       email: newUser.email,
@@ -104,6 +115,30 @@ export const subscription = async (req, res, next) => {
       { new: true }
     );
     res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateAvatar = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    const { path: tempUpload, originalname } = req.file;
+
+    const newImage = await Jimp.read(tempUpload);
+    newImage.resize(250, 250).write(tempUpload);
+
+    const filename = `${_id}_${originalname}`; // переименовываем и делаем название уникальным
+
+    const resultUpload = path.resolve(avatarsDir, filename);
+
+    await fs.rename(tempUpload, resultUpload);
+    // await fs.rename(tempUpload, resultUpload);
+
+    const avatarURL = path.resolve('avatars', filename);
+    await User.findByIdAndUpdate(_id, { avatarURL }); // перезаписываем аватар
+
+    res.json({ avatarURL });
   } catch (error) {
     next(error);
   }

@@ -5,8 +5,10 @@ import {
   getCurrent,
   logout,
   subscription,
+  updateAvatar,
 } from '../../controllers/auth.js';
 import { authenticate } from '../../middlewares/authenticate.js';
+import { upload } from '../../middlewares/upload.js';
 
 export const router = express.Router();
 
@@ -19,3 +21,5 @@ router.get('/current', authenticate, getCurrent); // проверяем акту
 router.post('/logout', authenticate, logout); // разлогинивание пользователя
 
 router.patch('/users', authenticate, subscription); // подписка
+
+router.patch('/avatars', authenticate, upload.single('avatar'), updateAvatar); // upload.single означаетт, что из поля 'avatar' прийдет файл
