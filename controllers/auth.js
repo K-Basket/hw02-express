@@ -1,5 +1,3 @@
-// 💙💛 Здесь контроллеры для авторизации и регистрации
-
 import { HttpError } from '../helpers/HttpError.js';
 import {
   User,
@@ -7,13 +5,13 @@ import {
   registerSchema,
   subscriptionSchema,
 } from '../models/user.js';
-import bcrypt from 'bcrypt'; // для хеширования пароля userа
-import jwt from 'jsonwebtoken'; // для создания JWT токена
-import 'dotenv/config'; // передача данных из файла / .env / в глобальную Переменную окружения
-import gravatar from 'gravatar'; // генерация временной аватарки
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
+import gravatar from 'gravatar';
 import path from 'path';
 import fs from 'fs/promises';
-import Jimp from 'jimp'; // resize pictures
+import Jimp from 'jimp';
 
 const { SECRET_KEY } = process.env;
 const avatarsDir = path.resolve('public', 'avatars');
