@@ -1,10 +1,23 @@
 import { HttpError } from '../helpers/HttpError.js';
 import { Contact, addSchema, updateFavoriteSchema } from '../models/contact.js';
-import { isValidId } from '../helpers/isValidId.js';
 
 export async function listContacts(req, res, next) {
   try {
-    const result = await Contact.find({}, '-createdAt -updatedAt'); // ищет все контакты в MongoDB
+    const { _id: owner } = req.user; // вытаскиваем _id одновременно переименовав его в owner из req // добавляет ownera в req в authenticate.js
+    const { page = 1, limit = 10, favorite } = req.query; // req.query - все параметры поиска
+
+    let list = { owner, favorite };
+
+    if (favorite === undefined) {
+      list = { owner };
+    }
+    const skip = (page - 1) * limit; // вычисление пагинации
+    const result = await Contact.find(list, '-createdAt -updatedAt', {
+      skip,
+      limit,
+    }).populate('owner', 'name email');
+    // /.find({ owner }, '-createdAt -updatedAt', {skip, limit,}/ - ищет все контакты в MongoDB c учетом собственника контакта; /'-createdAt -updatedAt'/ - и исключаем дату создания и обновления
+    // .populate('owner') - означает след-ее, возьми поле 'owner', найди с какой оно коллекции, пойди в ту коллекцию, найди объект с таким id и и вставь в поле owner; второй параметр - это список нужных полей; третий параметр - это пагинация
 
     res.json(result);
   } catch (error) {
@@ -15,8 +28,6 @@ export async function listContacts(req, res, next) {
 export async function getById(req, res, next) {
   try {
     const { contactId } = req.params; // забираем из объекта params значение contactId // все динамические части маршрута сохраняются в объекте req.params
-
-    isValidId(contactId, next); // проверяет валидность id внутри Mongoose
 
     // const result = await Contact.findOne({ _id: contactId }); // метод 1
     const result = await Contact.findById(contactId, '-createdAt -updatedAt'); // метод 2 // ищет по id контакт MongoDB
@@ -32,10 +43,10 @@ export async function getById(req, res, next) {
 export async function addContact(req, res, next) {
   try {
     const { error } = addSchema.validate(req.body); // валидация объекта запроса приходящего от backend (model/contact.js)
-
     if (error) throw HttpError(400, 'missing required name field');
 
-    const result = await Contact.create(req.body); // добавляет контакт в MongoDB
+    const { _id: owner } = req.user; // вытаскиваем _id одновременно переименовав его в owner из req
+    const result = await Contact.create({ ...req.body, owner }); // добавляет контакт в MongoDB с учетом собственника контакта
 
     res.status(201).json(result);
   } catch (error) {
@@ -46,12 +57,9 @@ export async function addContact(req, res, next) {
 export async function updateContact(req, res, next) {
   try {
     const { error } = addSchema.validate(req.body);
-
     if (error) throw HttpError(400, 'missing required name field');
 
     const { contactId } = req.params;
-
-    isValidId(contactId, next);
 
     const result = await Contact.findByIdAndUpdate(contactId, req.body, {
       new: true,
@@ -68,12 +76,9 @@ export async function updateContact(req, res, next) {
 export async function updateStatusContact(req, res, next) {
   try {
     const { error } = updateFavoriteSchema.validate(req.body);
-
     if (error) throw HttpError(400, 'missing required field Favorite');
 
     const { contactId } = req.params;
-
-    isValidId(contactId, next);
 
     const result = await Contact.findByIdAndUpdate(contactId, req.body, {
       new: true,
@@ -91,7 +96,6 @@ export async function removeContact(req, res, next) {
   try {
     const { contactId } = req.params;
 
-    isValidId(contactId, next);
     // const result = await Contact.findByIdAndDelete(contactId); // Method-1
     const result = await Contact.findByIdAndRemove(contactId); // удаляет контакт по id из MongoDB // Method-2
 
