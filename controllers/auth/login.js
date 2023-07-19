@@ -13,22 +13,17 @@ export const login = async (req, res, next) => {
 
     const { email, password } = req.body;
 
-    // проверяем наличие user в DB
     const user = await User.findOne({ email: email });
     if (!user) throw HttpError(401, 'Email or password invalid');
 
-    // если user есть в DB, тогда проверяем пароль с помощью dcrypt
     const passwordCompare = await bcrypt.compare(password, user.password);
-    if (!passwordCompare) throw HttpError(401, 'Email or password invalid'); // если не совпадает - выбрасываем ошибку
+    if (!passwordCompare) throw HttpError(401, 'Email or password invalid');
 
-    // если пароль совпадает - создаем токен
     const payload = {
       id: user._id,
-    }; // создаем payload с id usera
-    // создаем token - метод .sign()
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' }); // payload - info про User (id):\
-    // записываем токен в DB, после чего можно будет разлогиниваться
-    await User.findByIdAndUpdate(user._id, { token }); // запиисали токен в DB
+    };
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' });
+    await User.findByIdAndUpdate(user._id, { token });
 
     res.json({
       token,

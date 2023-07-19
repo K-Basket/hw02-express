@@ -10,8 +10,7 @@ export async function updateStatusContact(req, res, next) {
 
     const result = await Contact.findByIdAndUpdate(contactId, req.body, {
       new: true,
-    }); // обновляет свойство favorite в MongoDB
-
+    });
     if (!result) throw HttpError(404, 'Not found');
 
     res.json(result);

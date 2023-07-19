@@ -11,9 +11,9 @@ export const updateAvatar = async (req, res, next) => {
     const { path: tempUpload, originalname } = req.file;
 
     const resizeAvatar = await Jimp.read(tempUpload);
-    resizeAvatar.resize(250, Jimp.AUTO).write(tempUpload); // resize файла и запись его по адресу tempUpload
+    resizeAvatar.resize(250, Jimp.AUTO).write(tempUpload);
 
-    const filename = `${_id}_${originalname}`; // переименовываем и делаем название уникальным
+    const filename = `${_id}_${originalname}`;
 
     const resultUpload = path.resolve(avatarsDir, filename);
     await fs.rename(tempUpload, resultUpload); // перемещение файла из tmp в public/avatars

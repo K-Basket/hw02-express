@@ -8,7 +8,7 @@ import { updateContact } from '../../controllers/contacts/updateContact.js';
 import { updateStatusContact } from '../../controllers/contacts/updateStatusContact.js';
 import { removeContact } from '../../controllers/contacts/removeContact.js';
 
-export const router = express.Router(); // Создает объект мини-приложения, который передаем в app.js
+export const router = express.Router();
 
 router.get('/', authenticate, listContacts);
 

@@ -9,18 +9,18 @@ export const register = async (req, res, next) => {
     if (error) throw HttpError(400, 'missing required name field');
 
     const { email, password } = req.body;
-    const user = await User.findOne({ email }); // .findeOne(email: email) ищет до первого совпадения, если нет - возвращает null
 
-    if (user) throw HttpError(409, 'Email already in use'); // возврат ошибки на дублирование e-mail
+    const user = await User.findOne({ email }); // gets email or null
+    if (user) throw HttpError(409, 'Email already in use');
 
-    const hashPassword = await bcrypt.hash(password, 10); // хеширование пароля, 10-кол-во случайных символов при хешировании
-    const avatarURL = gravatar.url(email); // присваивание user временной аватарки
+    const hashPassword = await bcrypt.hash(password, 10);
+    const avatarURL = gravatar.url(email);
 
     const newUser = await User.create({
       ...req.body,
       password: hashPassword,
       avatarURL,
-    }); // сохраняем в DB hashPassword
+    });
 
     res.status(201).json({
       email: newUser.email,

@@ -1,10 +1,9 @@
-// 💙💛  Здесь создаем Mongoose модель для регистрации Users.
-
+// 💙💛  Mongoose модель.
 import { Schema, model } from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
 import Joi from 'joi';
 
-const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // выражение валидации email
+const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const userSchema = new Schema(
   {
@@ -42,16 +41,12 @@ const userSchema = new Schema(
 
 userSchema.post('save', handleMongooseError);
 
-// проверка наличия в DB e-mail
-
-// Joi schema - на регистрацию
 export const registerSchema = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().pattern(emailRegexp).required(), // pattern() - валидация e-mail
+  email: Joi.string().pattern(emailRegexp).required(),
   password: Joi.string().min(6).required(),
 });
 
-// Joi schema - на логин
 export const loginSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
   password: Joi.string().min(6).required(),

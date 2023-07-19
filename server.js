@@ -1,11 +1,10 @@
 import app from './app.js';
 import mongoose from 'mongoose';
 
-const { DB_HOST, PORT = 3000 } = process.env; // берем данные из глобального объекта - Environment (Переменная окружения)
+const { DB_HOST, PORT = 3000 } = process.env;
 
 mongoose.set('strictQuery', true);
 
-// подключение к базе данных MongoDB
 mongoose
   .connect(DB_HOST)
   .then(() => {
@@ -13,7 +12,7 @@ mongoose
   })
   .catch(error => {
     console.log(error.message);
-    process.exit(1); // закрывает запущенные процессы, (1) - означает что закрыто с неизвестной ошибкой
+    process.exit(1);
   });
 
 function infoServer() {
