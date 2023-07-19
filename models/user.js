@@ -42,7 +42,7 @@ const userSchema = new Schema(
     verificationCode: {
       type: String,
       default: '',
-    }, // код подтвердений приходящий на почту
+    },
   },
   { versionKey: false, timestamps: true }
 );
