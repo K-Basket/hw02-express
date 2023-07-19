@@ -35,6 +35,14 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: {
+      type: String,
+      default: '',
+    }, // код подтвердений приходящий на почту
   },
   { versionKey: false, timestamps: true }
 );
@@ -45,6 +53,10 @@ export const registerSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().pattern(emailRegexp).required(),
   password: Joi.string().min(6).required(),
+});
+
+export const emailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required(),
 });
 
 export const loginSchema = Joi.object({

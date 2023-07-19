@@ -1,5 +1,5 @@
 import { HttpError } from '../../helpers/HttpError.js';
-import { Contact } from '../../models/contact.js';
+import { Contact, updateFavoriteSchema } from '../../models/contact.js';
 
 export async function updateStatusContact(req, res, next) {
   try {
