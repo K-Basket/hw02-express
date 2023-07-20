@@ -1,5 +1,5 @@
 import { HttpError } from '../../helpers/HttpError.js';
-import { subscriptionSchema } from '../../models/user.js';
+import { User, subscriptionSchema } from '../../models/user.js';
 
 export const subscription = async (req, res, next) => {
   try {
@@ -13,6 +13,7 @@ export const subscription = async (req, res, next) => {
       { subscription },
       { new: true }
     );
+
     res.json(result);
   } catch (error) {
     next(error);

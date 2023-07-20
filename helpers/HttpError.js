@@ -11,5 +11,3 @@ export const HttpError = (status, message = errorMessageList[status]) => {
   error.status = status;
   return error;
 };
-
-// т.к. функция создает новый объект ее принято называть с большой буквы.

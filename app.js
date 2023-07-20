@@ -1,23 +1,20 @@
 import express from 'express';
 import morgan from 'morgan';
-const logger = morgan; // выводит в консоль инфомрацию про запросы CRUD
+const logger = morgan;
 import cors from 'cors';
-import { router as contactsRouter } from './routes/api/contacts.js'; // импортируем роуты работы с маршрутами
+import { router as contactsRouter } from './routes/api/contacts.js';
 import { router as authRouter } from './routes/api/auth.js';
-import 'dotenv/config'; // передача данных из файла / .env / в глобальную Переменную окружения
+import 'dotenv/config';
 
-// import { configDotenv } from 'dotenv'; // для записи в .env секретных данных
-// configDotenv(); // передача данных из файла / .env / в глобальную Переменную окружения
-
-const app = express(); // app - создан web-сервер
+const app = express();
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 
 app.use(logger(formatsLogger));
-app.use(cors()); // передаем middleware функцию cors, после чего блокировка сервером не производится.
-app.use(express.json()); // парсер JSON, интерпретирует значение req.body в формат json
-app.use(express.static('public')); // если прийдет запрос на файл, бери их в папке public
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
 
-app.use('/api/contacts', contactsRouter); // когда прийдет запрос, который начинается с "/api/contacts" ищи его обработчик в contactsRouter
+app.use('/api/contacts', contactsRouter);
 app.use('/api/auth', authRouter);
 
 app.use((req, res) => {
@@ -27,6 +24,6 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   const { status = 500, message = 'Server error' } = err;
   res.status(status).json({ message });
-}); // функция обработки ошибок
+});
 
-export default app; // экспортируем web-server для запуска в файле server.js
+export default app;

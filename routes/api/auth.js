@@ -7,17 +7,23 @@ import { getCurrent } from '../../controllers/auth/getCurrent.js';
 import { logout } from '../../controllers/auth/logout.js';
 import { subscription } from '../../controllers/auth/subscription.js';
 import { updateAvatar } from '../../controllers/auth/updateAvatar.js';
+import { verifyEmail } from '../../controllers/auth/verifyEmail.js';
+import { resendVerifyEmail } from '../../controllers/auth/resendVerifyEmail.js';
 
 export const router = express.Router();
 
-router.post('/register', register); // или /signup, регистрация пользователя
+router.post('/register', register); // or signup
 
-router.post('/login', login); // или /signin, авторизация пользователя
+router.get('/verify/:verificationCode', verifyEmail);
+
+router.post('/verify', resendVerifyEmail);
+
+router.post('/login', login); // or signin
 
 router.get('/current', authenticate, getCurrent); // проверяем актуальность токена
 
-router.post('/logout', authenticate, logout); // разлогинивание пользователя
+router.post('/logout', authenticate, logout);
 
 router.patch('/users', authenticate, subscription); // подписка
 
-router.patch('/avatars', authenticate, upload.single('avatar'), updateAvatar); // upload.single означаетт, что из поля 'avatar' прийдет файл
+router.patch('/avatars', authenticate, upload.single('avatar'), updateAvatar);

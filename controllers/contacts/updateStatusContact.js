@@ -1,5 +1,5 @@
 import { HttpError } from '../../helpers/HttpError.js';
-import { Contact } from '../../models/contact.js';
+import { Contact, updateFavoriteSchema } from '../../models/contact.js';
 
 export async function updateStatusContact(req, res, next) {
   try {
@@ -10,8 +10,7 @@ export async function updateStatusContact(req, res, next) {
 
     const result = await Contact.findByIdAndUpdate(contactId, req.body, {
       new: true,
-    }); // обновляет свойство favorite в MongoDB
-
+    });
     if (!result) throw HttpError(404, 'Not found');
 
     res.json(result);

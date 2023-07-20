@@ -8,20 +8,19 @@ import 'dotenv/config';
 const { SECRET_KEY } = process.env;
 
 export const authenticate = async (req, res, next) => {
-  const { authorization = '' } = req.headers; // берем из заголовка headers строку authorization
-  const [bearer, token] = authorization.split(' '); // делим строку authorization на bearer и token меттодом split()
+  const { authorization = '' } = req.headers;
+  const [bearer, token] = authorization.split(' ');
 
-  if (bearer !== 'Bearer') next(HttpError(401)); // проверяет первое слово, является ли оно bearer
+  if (bearer !== 'Bearer') next(HttpError(401));
 
   try {
-    const { id } = jwt.verify(token, SECRET_KEY); // проверка валидности токена // если не валидный - jwt.verify() выбросит ошибку; вытаскиваем id usera
-    const user = await User.findById(id); // повторно проверяем в DB наличие user по id и запись всех данных пользователя в user
+    const { id } = jwt.verify(token, SECRET_KEY);
 
-    if (!user || !user.token || user.token !== token) next(HttpError(401)); // проверка наличия пользователя в DB; наличия токена; равенство токена
+    const user = await User.findById(id);
+    if (!user || !user.token || user.token !== token) next(HttpError(401));
 
-    req.user = user; // в req создаем объект user и записываем в него данные пользователя взятые из DB, теперь эти данные о пользователе будут доступны везде.
-
-    next(); // если все оk, тогда пропукаем код далее, т.е. выходим из middleware
+    req.user = user; // запись данных user'а из DB в req
+    next();
   } catch {
     next(HttpError(401));
   }
