@@ -1,7 +1,7 @@
 import app from './app.js';
 import mongoose from 'mongoose';
 
-const { DB_HOST, PORT = 3000 } = process.env;
+const { DB_HOST, PORT = 3001 } = process.env;
 
 mongoose.set('strictQuery', true);
 
@@ -16,5 +16,5 @@ mongoose
   });
 
 function infoServer() {
-  console.log('Database connection successful');
+  console.log('💙💛 Database connection successful: port: 3001');
 }
