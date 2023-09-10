@@ -12,11 +12,11 @@ const contactSchema = new Schema(
       type: String,
       required: true,
     },
-    email: {
-      type: String,
-      match: emailRegexp,
-      required: true,
-    },
+    // email: {
+    //   type: String,
+    //   match: emailRegexp,
+    //   required: true,
+    // },
     phone: {
       type: String,
       match: phoneRegexp,
@@ -39,7 +39,7 @@ contactSchema.post('save', handleMongooseError);
 
 export const addSchema = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().pattern(emailRegexp).required(),
+  // email: Joi.string().pattern(emailRegexp).required(),
   phone: Joi.string().pattern(phoneRegexp).required(),
   favorite: Joi.boolean(),
 });
