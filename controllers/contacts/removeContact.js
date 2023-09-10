@@ -8,7 +8,9 @@ export async function removeContact(req, res, next) {
     const result = await Contact.findByIdAndRemove(contactId); // .findByIdAndDelete(contactId)
     if (!result) throw HttpError(404, 'Not found');
 
-    res.json({ message: 'contact deleted' });
+    console.log('result :>> ', result);
+
+    res.json({ message: 'contact deleted', id: contactId });
   } catch (error) {
     next(error);
   }
