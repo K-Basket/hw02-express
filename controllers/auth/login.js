@@ -16,7 +16,7 @@ export const login = async (req, res, next) => {
     const user = await User.findOne({ email: email });
     if (!user) throw HttpError(401, 'Email or password invalid');
 
-    if (!user.verify) throw HttpError(401, 'Email not verify');
+    // if (!user.verify) throw HttpError(401, 'Email not verify');
 
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) throw HttpError(401, 'Email or password invalid');
@@ -27,9 +27,12 @@ export const login = async (req, res, next) => {
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' });
     await User.findByIdAndUpdate(user._id, { token });
 
+    console.log('user :>> ', user);
+
     res.json({
       token,
-      user,
+      user: user.name,
+      email: user.email,
     });
   } catch (error) {
     next(error);
